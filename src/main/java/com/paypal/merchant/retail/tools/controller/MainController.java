@@ -1,26 +1,19 @@
 package com.paypal.merchant.retail.tools.controller;
 
 import com.paypal.merchant.retail.tools.Main;
-import com.paypal.merchant.retail.tools.client.SdkClient;
-import com.paypal.merchant.retail.tools.exception.ClientException;
 import com.paypal.merchant.retail.tools.util.PropertyManager;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,56 +21,61 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 /**
  * Created by Paolo on 7/21/2014.
  */
 public class MainController implements Initializable, ManagedPane {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    PaneManager paneManager;
+    private static Logger logger = LoggerFactory.getLogger(MainController.class);
+    private PaneManager paneManager;
 
     private static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
-    private static SimpleDateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static final String STORE_AVAILABILITY = "storeAvailability";
+    public static final String STORE_AVAILABILITY_FXML = "/fxml/storeAvailability.fxml";
+
+    public static final String PROCESS_REFUND = "processRefund";
+    public static final String PROCESS_REFUND_FXML = "/fxml/processRefund.fxml";
+
 
     @FXML
-    private StackPane rootPane;
+    private HBox mainHBox;
 
     @FXML
     private Pane mainPane, processingPane;
 
     @FXML
-    private Label lbl_dateTime, lbl_storeStatus, lbl_storeId, lbl_locationId, lbl_street, lbl_city, lbl_state, lbl_phone, lbl_manager;
-
-    @FXML
-    private Button btn_changeStatus;
-
-    @FXML
-    private TextArea txt_log;
+    private Label lbl_dateTime, lbl_storeId, lbl_locationId, lbl_street, lbl_city, lbl_state, lbl_phone, lbl_manager;
 
     @FXML
     private ImageView img_processing;
+
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //TODO
         logger.debug("initializing...");
-        lbl_manager.setText(PropertyManager.INSTANCE.getProperty("store.manager"));
+        this.lbl_manager.setText(PropertyManager.INSTANCE.getProperty("store.manager"));
         bindToTime(lbl_dateTime);
+
+        paneManager = new PaneManager();
+        paneManager.setId("rootPaneManager");
+        paneManager.loadPane(STORE_AVAILABILITY, STORE_AVAILABILITY_FXML);
+        paneManager.loadPane(PROCESS_REFUND, PROCESS_REFUND_FXML);
+        paneManager.setPane(STORE_AVAILABILITY);
+
+        mainHBox.getChildren().add(paneManager);
+
 
         final Image processing = new Image(Main.class.getResourceAsStream("/images/LoadingWheel.gif"));
         img_processing.setImage(processing);
 
-        for (Node n : rootPane.getChildren()) {
-            logger.debug(n.getId());
-        }
-
-        appendToLog("SDK Tool initialized");
 
         try {
-            updateScreen();
-            appendToLog("Store Location availability: " + (Main.sdkLocation.isOpen() ? "OPEN" : "CLOSED"));
+            updateStoreInfoControls();
         } catch (Exception e) {
             logger.error("Failed to initialize SDK Tool! ", e);
         }
@@ -88,57 +86,7 @@ public class MainController implements Initializable, ManagedPane {
         this.paneManager = paneManager;
     }
 
-    /**
-     * Handles the change location status event
-     *
-     * @param event ActionEvent
-     */
-    @FXML
-    protected void handleChangeLocationStatus(ActionEvent event) {
-        logger.debug("Handling Change Location Status button");
 
-        try {
-            // Set the availability to the opposite of what it is currently
-            appendToLog("Setting Store Location availability to: " + (Main.sdkLocation.isOpen() ? "CLOSED" : "OPEN"));
-
-            // show glass pane
-            processingPane.setVisible(true);
-
-            final Task setLocationAvailabilityTask = new Task() {
-                @Override
-                protected Void call() throws InterruptedException {
-                    updateMessage("Setting Store Location Availability . . .");
-                    try {
-                        Main.sdkLocation = SdkClient.INSTANCE.setLocationAvailability(Main.sdkLocation, !Main.sdkLocation.isOpen());
-                    } catch (ClientException e) {
-                        logger.error("Failed to set Store Location Availability");
-                    }
-                    updateMessage("Success");
-
-                    // Update the screen after finished
-                    Platform.runLater(() -> {
-                        updateScreen();
-                        appendToLog("Store Location is: " + (Main.sdkLocation.isOpen() ? "OPEN" : "CLOSED"));
-
-                        // hide the glass pane
-                        processingPane.setVisible(false);
-                    });
-                    return null;
-                }
-            };
-
-            new Thread(setLocationAvailabilityTask).start();
-
-
-
-
-        } catch (Exception e) {
-            logger.error("Failed to handle Change Location Status ", e);
-            appendToLog("Failed to change Store Location Availability");
-        }
-
-        event.consume();
-    }
 
     /**
      * Handles the manage store event
@@ -148,6 +96,7 @@ public class MainController implements Initializable, ManagedPane {
     @FXML
     protected void handleManageStore(ActionEvent event) {
         logger.debug("Handling Manage Store button");
+        paneManager.setPane(STORE_AVAILABILITY);
         event.consume();
     }
 
@@ -159,10 +108,11 @@ public class MainController implements Initializable, ManagedPane {
     @FXML
     protected void handleIssueRefund(ActionEvent event) {
         logger.debug("Handling Issue Refund button");
+        paneManager.setPane(PROCESS_REFUND);
         event.consume();
     }
 
-    private void updateScreen() {
+    public void updateStoreInfoControls() {
         if (Main.sdkLocation == null) {
             logger.info("sdkLocation is null so clearing store information");
 
@@ -173,8 +123,6 @@ public class MainController implements Initializable, ManagedPane {
             lbl_state.setText(null);
             lbl_phone.setText(null);
 
-            lbl_storeStatus.setText("UNKNOWN");
-            btn_changeStatus.setDisable(true);
         } else {
             lbl_storeId.setText(Main.sdkLocation.getStoreId());
             lbl_locationId.setText(Main.sdkLocation.getId());
@@ -182,15 +130,6 @@ public class MainController implements Initializable, ManagedPane {
             lbl_city.setText(Main.sdkLocation.getAddress().getCity());
             lbl_state.setText(Main.sdkLocation.getAddress().getState());
             lbl_phone.setText(Main.sdkLocation.getPhoneNumber());
-
-            btn_changeStatus.setDisable(false);
-            if (Main.sdkLocation.isOpen()) {
-                lbl_storeStatus.setText("OPEN");
-                btn_changeStatus.setText("Click here to CLOSE");
-            } else {
-                lbl_storeStatus.setText("CLOSED");
-                btn_changeStatus.setText("Click here to OPEN");
-            }
         }
         return;
     }
@@ -209,9 +148,12 @@ public class MainController implements Initializable, ManagedPane {
         timeline.play();
     }
 
-    private void appendToLog(String message) {
-        txt_log.appendText(logDateFormat.format(new Date()) + " - " + message + "\n");
+    public void showProcessing() {
+        processingPane.setVisible(true);
     }
 
+    public void hideProcessing() {
+        processingPane.setVisible(false);
+    }
 
 }

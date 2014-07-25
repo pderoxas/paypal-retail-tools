@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 public class PaneManager extends StackPane {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final double fadeTime = 200;
+    private static final double fadeTime = 100;
 
     //Collection of the panes available
     private HashMap<String, Node> panes = new HashMap<String, Node>();
@@ -47,7 +47,7 @@ public class PaneManager extends StackPane {
     public boolean loadPane(String name, String resource) {
         try {
             FXMLLoader myLoader = new FXMLLoader(getClass().getResource(resource));
-            Parent loadScreen = (Parent) myLoader.load();
+            Parent loadScreen = myLoader.load();
             ManagedPane myManagedPane = myLoader.getController();
             myManagedPane.setParent(this);
             addPane(name, loadScreen);
@@ -57,6 +57,8 @@ public class PaneManager extends StackPane {
             return false;
         }
     }
+
+
 
     //Set the current pane.  If one already exists, transition from old to new
     public boolean setPane(final String name) {

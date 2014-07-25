@@ -7,74 +7,62 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane fx:id="rootPane" focusTraversable="true" prefHeight="693.999977929685" prefWidth="926.0" style="-fx-background-color: #BDBDBD;" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.paypal.merchant.retail.tools.controller.MainController">
-  <Pane fx:id="mainPane" focusTraversable="true" prefHeight="700.0001220703125" prefWidth="926.0" style="-fx-background-color: #002A48;" visible="true">
-    <Pane layoutX="14.0" layoutY="17.0" prefHeight="663.0" prefWidth="299.9998779296875" style="-fx-background-color: #A4A4A4;" styleClass="bordered-titled-border">
+<!--<StackPane fx:id="rootPane" focusTraversable="true" prefHeight="693.999977929685" prefWidth="890.0" style="-fx-background-color: #BDBDBD;" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.paypal.merchant.retail.tools.controller.MainController">-->
+<StackPane fx:id="rootPane" focusTraversable="true" prefHeight="693.999977929685" prefWidth="890.0" style="-fx-background-color: #BDBDBD;" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" >
+  <Pane fx:id="mainPane" focusTraversable="true" prefHeight="694.0" prefWidth="894.0" style="-fx-background-color: #002A48;" visible="true">
+    <HBox fx:id="mainHBox" layoutX="0.0" layoutY="0.0" prefHeight="694.0" prefWidth="893.0">
       <children>
-        <Button fx:id="btn_manageStore" layoutX="50.0" layoutY="339.0" mnemonicParsing="false" onAction="#handleManageStore" prefHeight="52.0" prefWidth="200.0" styleClass="button-large, button-grey" text="Manage Store" />
-        <Button fx:id="btn_issueRefund" layoutX="50.0" layoutY="399.0" mnemonicParsing="false" onAction="#handleIssueRefund" prefHeight="52.0" prefWidth="200.0" styleClass="button-grey, font-medium" text="Issue Refund" />
-        <Button id="btn_manageStore" layoutX="50.0" layoutY="459.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" styleClass="null, button-grey" text="" />
-        <Button id="btn_manageStore" layoutX="50.0" layoutY="519.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" styleClass="null, button-grey" text="" />
-        <Pane layoutX="14.0" layoutY="14.0" prefHeight="297.0" prefWidth="271.9998779296875" style="" styleClass="bordered-titled-border">
+        <Pane prefHeight="663.0" prefWidth="299.9998779296875" style="-fx-background-color: #A4A4A4;" styleClass="bordered-titled-border">
           <children>
-            <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="13.0" prefHeight="24.306640625" prefWidth="243.9998779296875" styleClass="font-medium" text="Store Information" textAlignment="CENTER" />
-            <GridPane hgap="10.0" layoutX="14.0" layoutY="47.0" prefWidth="285.999977929685" vgap="0.0">
+            <Button fx:id="btn_manageStore" layoutX="50.0" layoutY="339.0" mnemonicParsing="false" onAction="#handleManageStore" prefHeight="52.0" prefWidth="200.0" styleClass="button-large, button-grey" text="Manage Store" />
+            <Button fx:id="btn_issueRefund" layoutX="50.0" layoutY="399.0" mnemonicParsing="false" onAction="#handleIssueRefund" prefHeight="52.0" prefWidth="200.0" styleClass="button-grey, font-medium" text="Issue Refund" />
+            <Button id="btn_manageStore" layoutX="50.0" layoutY="459.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" styleClass="null, button-grey" text="" />
+            <Button id="btn_manageStore" layoutX="50.0" layoutY="519.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" styleClass="null, button-grey" text="" />
+            <Pane layoutX="14.0" layoutY="14.0" prefHeight="297.0" prefWidth="271.9998779296875" style="" styleClass="bordered-titled-border">
               <children>
-                <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Address:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Phone:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Manager:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Store Id:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <Label fx:id="lbl_storeId" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label fx:id="lbl_street" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <Label fx:id="lbl_city" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <Label fx:id="lbl_state" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                <Label fx:id="lbl_phone" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                <Label fx:id="lbl_manager" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Date &amp; Time:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <Label fx:id="lbl_dateTime" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Location Id:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                <Label fx:id="lbl_locationId" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="13.0" prefHeight="24.306640625" prefWidth="243.9998779296875" styleClass="font-medium" text="Store Information" textAlignment="CENTER" />
+                <GridPane hgap="10.0" layoutX="14.0" layoutY="47.0" prefWidth="285.999977929685" vgap="0.0">
+                  <children>
+                    <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Address:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Phone:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                    <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Manager:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                    <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Store Id:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label fx:id="lbl_storeId" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="lbl_street" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label fx:id="lbl_city" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label fx:id="lbl_state" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <Label fx:id="lbl_phone" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <Label fx:id="lbl_manager" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                    <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Date &amp; Time:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label fx:id="lbl_dateTime" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <Label alignment="CENTER_RIGHT" prefWidth="99.0" text="Location Id:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label fx:id="lbl_locationId" prefWidth="216.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="99.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="230.0" minWidth="10.0" prefWidth="172.0" />
+                  </columnConstraints>
+                  <padding>
+                    <Insets left="5.0" right="5.0" />
+                  </padding>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
               </children>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="99.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="230.0" minWidth="10.0" prefWidth="172.0" />
-              </columnConstraints>
-              <padding>
-                <Insets left="5.0" right="5.0" />
-              </padding>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-            </GridPane>
-          </children>
-        </Pane>
-        <Button id="btn_manageStore" layoutX="50.0" layoutY="579.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" styleClass="button-large, button-grey" text="" />
-      </children>
-    </Pane>
-    <StackPane fx:id="contentPane" layoutX="322.0" layoutY="16.0" prefHeight="663.0" prefWidth="590.0">
-      <children>
-        <Pane fx:id="manageStorePane" prefHeight="663.0" prefWidth="583.0" style="-fx-background-color: #FFFFFF;" styleClass="bordered-titled-border" visible="true">
-          <children>
-            <Label alignment="TOP_CENTER" layoutX="17.0" layoutY="32.0" prefWidth="556.0" styleClass="font-large" text="Store Location is currently:" textAlignment="CENTER" />
-            <Label fx:id="lbl_storeStatus" alignment="TOP_CENTER" layoutX="14.0" layoutY="71.0" prefWidth="562.0" styleClass="font-xxlarge" text="STATUS" textAlignment="CENTER" />
-            <Button fx:id="btn_changeStatus" layoutX="145.0" layoutY="198.0" mnemonicParsing="false" onAction="#handleChangeLocationStatus" prefHeight="75.0" prefWidth="300.0" styleClass="button-blue, button-large" text="Click Here to OPEN" />
-            <TextArea fx:id="txt_log" layoutX="17.0" layoutY="312.0" prefHeight="337.0" prefWidth="556.0" style="-fx-border-color: #000000;&#10;-fx-border-width: 2;" wrapText="true" />
-          </children>
-        </Pane>
-        <Pane fx:id="issueRefundPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF;" visible="false">
-          <children>
-            <Label layoutX="154.0" layoutY="135.0" styleClass="button-medium" text="Reserved for Refund Feature" />
+            </Pane>
+            <Button id="btn_manageStore" layoutX="50.0" layoutY="579.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="200.0" styleClass="button-large, button-grey" text="" />
           </children>
         </Pane>
       </children>
-    </StackPane>
+    </HBox>
     <rotationAxis>
       <Point3D />
     </rotationAxis>
@@ -82,15 +70,15 @@
       <URL value="@../styles/main.css" />
     </stylesheets>
   </Pane>
-  <Pane fx:id="processingPane" opacity="0.5" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #A4A4A4;" visible="false">
-    <children>
-      <ImageView fx:id="img_processing" fitHeight="150.0" fitWidth="200.0" layoutX="363.0" layoutY="276.0" pickOnBounds="true" preserveRatio="true" />
-    </children>
-  </Pane>
   <rotationAxis>
     <Point3D />
   </rotationAxis>
   <stylesheets>
     <URL value="@../styles/main.css" />
   </stylesheets>
+  <Pane fx:id="processingPane" opacity="0.5" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #A4A4A4;" visible="false">
+    <children>
+      <ImageView fx:id="img_processing" fitHeight="150.0" fitWidth="200.0" layoutX="363.0" layoutY="276.0" pickOnBounds="true" preserveRatio="true" />
+    </children>
+  </Pane>
 </StackPane>

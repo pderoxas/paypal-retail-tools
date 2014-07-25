@@ -2,7 +2,7 @@ package com.paypal.merchant.retail.tools;
 
 import com.paypal.merchant.retail.sdk.contract.entities.Location;
 import com.paypal.merchant.retail.tools.client.SdkClient;
-import com.paypal.merchant.retail.tools.controller.PaneManager;
+import com.paypal.merchant.retail.tools.controller.MainController;
 import com.paypal.merchant.retail.tools.exception.ClientException;
 import com.paypal.merchant.retail.tools.util.PropertyManager;
 import javafx.animation.FadeTransition;
@@ -10,9 +10,10 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -34,7 +35,10 @@ import org.slf4j.LoggerFactory;
  */
 public class Main extends Application {
     private static Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final Group root = new Group();
+
+    public static MainController controller;
+    public static Location sdkLocation;
+
     private Stage mainStage = new Stage(StageStyle.DECORATED);
     private Pane splashLayout;
     private ProgressBar loadProgress;
@@ -42,13 +46,13 @@ public class Main extends Application {
     private static final int SPLASH_WIDTH = 687;
     private static final int SPLASH_HEIGHT = 181;
 
-    public static Location sdkLocation;
-    public static final String MAIN = "main";
-    public static final String MAIN_FXML = "/fxml/main.fxml";
+
+
 
     public static void main(String[] args) {
         logger.info("Launching Merchant SDK Tool");
         try{
+            controller = new MainController();
             Application.launch(args);
         } catch(Exception e) {
             logger.error("Error! ", e);
@@ -91,15 +95,15 @@ public class Main extends Application {
 
     private void showMainStage() {
         try{
-            PaneManager paneManager = new PaneManager();
-            paneManager.setId("rootPaneManager");
-            paneManager.loadPane(MAIN, MAIN_FXML);
-            paneManager.setPane(MAIN);
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+            fxmlLoader.setController(controller);
 
+            Parent root = fxmlLoader.load();
             root.setId("rootGroup");
-            root.getChildren().addAll(paneManager);
+
             Scene scene = new Scene(root);
             scene.getStylesheets().add("/styles/main.css");
+
             mainStage.setScene(scene);
             mainStage.setTitle(PropertyManager.INSTANCE.getProperty("application.title"));
             mainStage.show();
@@ -113,6 +117,11 @@ public class Main extends Application {
     }
 
 
+    /**
+     * Show the splash screen while we get Location information
+     * @param initStage
+     * @param task
+     */
     private void showSplash(final Stage initStage, Task task) {
         progressText.textProperty().bind(task.messageProperty());
         loadProgress.progressProperty().bind(task.progressProperty());
