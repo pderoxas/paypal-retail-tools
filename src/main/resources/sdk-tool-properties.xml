@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties
+        [
+                <!ELEMENT properties ( comment?, entry* ) >
+                <!ATTLIST properties version CDATA #FIXED "1.0">
+                <!ELEMENT comment (#PCDATA) >
+                <!ELEMENT entry (#PCDATA) >
+                <!ATTLIST entry key CDATA #REQUIRED>
+                ]>
+<properties>
+    <comment>
+        This file must exist in the classpath OR be defined as -Dproperties.xml=/path/to/properties.xml
+        via command line.
+    </comment>
+
+    <entry key="application.title">PayPal Merchant SDK Tool</entry>
+    <entry key="application.version">${project.version}</entry>
+
+    <entry key="store.manager">Joseph Smith</entry>
+
+
+    <!-- SDK Location Info -->
+    <!-- These must match entries found in the Config.xml -->
+    <entry key="sdk.store.id">SanJose</entry>
+    <entry key="sdk.location.id">HBM97SXK6M6GU</entry>
+
+    <!-- These must match entries found in the Config.xml -->
+    <!--<entry key="sdk.store.id">1S1373571438-1</entry>-->
+    <!--<entry key="sdk.location.id">5QZEHPNLTA8W4</entry>-->
+
+</properties>

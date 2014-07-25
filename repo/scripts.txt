@@ -1,0 +1,7 @@
+# Command to deploy jar file to local mvn repo
+mvn deploy:deploy-file -Durl=file://C:\GitHub\paypal-pos\repo\
+                       -Dfile=paypal-pos-sdk-1.0.2.jar
+                       -DgroupId=com.paypal
+                       -DartifactId=paypal-pos-sdk
+                       -Dpackaging=jar
+                       -Dversion=1.0.2

@@ -1,0 +1,177 @@
+root {
+    display: block;
+}
+.root {
+
+}
+
+
+
+.label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-font-family: "Verdana";
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.font {
+    -fx-font-family: "Verdana";
+}
+
+.font-small {
+    -fx-font-size: 12px;
+}
+.font-medium {
+    -fx-font-size: 20px;
+}
+.font-large {
+    -fx-font-size: 26px;
+}
+.font-xxlarge {
+    -fx-font-size: 80px;
+}
+
+.text-field-large {
+    -fx-font-size: 18pt;
+    -fx-padding: 10 10 10 10;
+}
+
+.button {
+    -fx-background-insets: 0,1,4,5,6;
+    -fx-background-radius: 9,8,5,4,3;
+    -fx-font-family: "Verdana";
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
+}
+
+.button-small {
+    -fx-padding: 10 15 10 15;
+    -fx-font-size: 12;
+}
+.button-medium {
+     -fx-padding: 10 20 10 20;
+     -fx-font-size: 15;
+ }
+.button-large {
+     -fx-padding: 15 30 15 30;
+     -fx-font-size: 18px;
+ }
+.button-blue {
+     -fx-background-color:
+         #a6b5c9,
+         linear-gradient(#303842 0%, #3e5577 20%, #375074 100%),
+         linear-gradient(#768aa5 0%, #849cbb 5%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%);
+ }
+.button-grey {
+     -fx-background-color:
+         linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),
+         linear-gradient(#020b02, #3a3a3a),
+         linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),
+         linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),
+         linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);
+}
+.button-item-grid {
+     -fx-background-color:
+         #a6b5c9,
+         linear-gradient(#303842 0%, #3e5577 20%, #375074 100%),
+         linear-gradient(#768aa5 0%, #849cbb 5%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%);
+     -fx-font-size: 13px;
+     -fx-padding: 10 10 10 10;
+ }
+
+.button-item-grid-header {
+     -fx-background-color: linear-gradient(#ff5400, #be1d00);
+     -fx-font-size: 14px;
+     -fx-padding: 10 10 10 10;
+     -fx-text-fill:white;
+     -fx-font-weight: bold;
+     -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+ }
+
+
+
+
+.monospaced-text {
+    -fx-font-family: "monospace";
+    -fx-font-size: 12px;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.dialog-processing-pane .dialog-message-pane {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 10;
+}
+
+.dialog-message-pane-label {
+    -fx-font-size: 18;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.pagination{
+	-fx-base:#333333;
+    -fx-padding: 15 30 15 30;
+    -fx-font-size: 30px;
+    -fx-page-information-visible: false;
+}
+
+.pagination .toggle-button {
+	-fx-background-radius:15px;
+	-fx-padding: 10px;
+    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
+}
+.pagination .button {
+     -fx-background-color:
+         #a6b5c9,
+         linear-gradient(#303842 0%, #3e5577 20%, #375074 100%),
+         linear-gradient(#768aa5 0%, #849cbb 5%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%);
+     -fx-background-insets: 0,1,4,5,6;
+     -fx-background-radius: 9,8,5,4,3;
+     /*-fx-padding: 15 30 15 30;*/
+     -fx-font-family: "Verdana";
+
+     -fx-font-weight: bold;
+     -fx-text-fill: white;
+     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
+}
+.pagination .label {
+	-fx-text-fill:white;
+}
+
+
+
+
+.tab-pane *.tab-header-background {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, derive(-fx-color, -20%);
+    -fx-effect: innershadow(two-pass-box , rgba(0,0,0,0.6) , 4, 0.0 , 0 , 0);
+}
+
+.tab-font {
+    -fx-font-family: "Verdana";
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.bordered-titled-title {
+  -fx-translate-x:  8;
+  -fx-translate-y: -10;
+  -fx-padding: 0 0 0 4;
+  -fx-background-color: -fx-background;
+}
+
+.bordered-titled-border {
+  -fx-content-display: top;
+  -fx-border-insets: 0 0 0 0;
+  -fx-border-color: #000000;
+  -fx-border-width: 2;
+  -fx-background-color: #FFFFFF;
+}
+
+.bordered-titled-content {
+  -fx-padding: 18 5 5 5;
+}
+

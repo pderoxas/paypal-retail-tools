@@ -1,0 +1,3 @@
+This "repo" folder is only needed because there is no accessible
+Maven Repository for the SDK Project.  Once a repo is established,
+this folder should be deleted so that we are not bloating the GitHub repo with binaries.
