@@ -33,31 +33,40 @@ import org.slf4j.LoggerFactory;
  * Created by pderoxas on 2/26/14.
  * This is the main class of the Demo POS Application
  */
-public class Main extends Application {
+public final class Main extends Application {
     private static Logger logger = LoggerFactory.getLogger(Main.class);
 
-    public static MainController controller;
-    public static Location sdkLocation;
+    //public static MainController controller;
+    private static FXMLLoader fxmlLoader;
+    private static Location sdkLocation;
+    private static Parent root;
 
-    private Stage mainStage = new Stage(StageStyle.DECORATED);
     private Pane splashLayout;
     private ProgressBar loadProgress;
     private Label progressText;
     private static final int SPLASH_WIDTH = 687;
     private static final int SPLASH_HEIGHT = 181;
 
-
-
-
     public static void main(String[] args) {
         logger.info("Launching Merchant SDK Tool");
         try{
-            controller = new MainController();
+            fxmlLoader = new FXMLLoader(Main.class.getResource("/fxml/main.fxml"));
             Application.launch(args);
         } catch(Exception e) {
             logger.error("Error! ", e);
         }
+    }
 
+    public static void setLocation(Location sdkLocation) {
+        Main.sdkLocation = sdkLocation;
+    }
+
+    public static Location getLocation() {
+        return sdkLocation;
+    }
+
+    public static MainController getController(){
+        return fxmlLoader.getController();
     }
 
     @Override public void init() {
@@ -69,7 +78,7 @@ public class Main extends Application {
         splashLayout.setStyle("-fx-background-color:white;");
         splashLayout.getChildren().addAll(splash, loadProgress, progressText);
         progressText.setAlignment(Pos.CENTER);
-        splashLayout.setStyle("-fx-padding: 5; -fx-background-color: white; -fx-border-width:5; -fx-border-color: linear-gradient(to bottom, black, derive(black, 75%));");
+        splashLayout.setStyle("-fx-padding: 5; -fx-background-color: white; -fx-border-width:5; -fx-border-color: linear-gradient(to bottom, #333333, derive(black, 75%));");
         splashLayout.setEffect(new DropShadow());
     }
 
@@ -93,17 +102,18 @@ public class Main extends Application {
         new Thread(getLocationTask).start();
     }
 
-    private void showMainStage() {
+    private static void showMainStage() {
         try{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-            fxmlLoader.setController(controller);
 
-            Parent root = fxmlLoader.load();
+            //fxmlLoader.setController(controller);
+
+            root = fxmlLoader.load();
             root.setId("rootGroup");
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add("/styles/main.css");
 
+            Stage mainStage = new Stage(StageStyle.DECORATED);
             mainStage.setScene(scene);
             mainStage.setTitle(PropertyManager.INSTANCE.getProperty("application.title"));
             mainStage.show();
@@ -129,7 +139,6 @@ public class Main extends Application {
             if (newState == Worker.State.SUCCEEDED) {
                 loadProgress.progressProperty().unbind();
                 loadProgress.setProgress(1);
-                mainStage.setIconified(false);
                 initStage.toFront();
                 FadeTransition fadeSplash = new FadeTransition(Duration.seconds(0.5), splashLayout);
                 fadeSplash.setFromValue(1.0);

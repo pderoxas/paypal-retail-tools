@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,38 +44,32 @@ public class MainController implements Initializable, ManagedPane {
     private HBox mainHBox;
 
     @FXML
-    private Pane mainPane, processingPane;
+    private Pane processingPane;
 
     @FXML
-    private Label lbl_dateTime, lbl_storeId, lbl_locationId, lbl_street, lbl_city, lbl_state, lbl_phone, lbl_manager;
+    private Label lbl_dateTime, lbl_storeId, lbl_locationId, lbl_addressLine1, lbl_addressLine2, lbl_addressLine3, lbl_addressLine4, lbl_phone, lbl_manager;
 
     @FXML
     private ImageView img_processing;
 
 
-
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //TODO
-        logger.debug("initializing...");
-        this.lbl_manager.setText(PropertyManager.INSTANCE.getProperty("store.manager"));
-        bindToTime(lbl_dateTime);
-
-        paneManager = new PaneManager();
-        paneManager.setId("rootPaneManager");
-        paneManager.loadPane(STORE_AVAILABILITY, STORE_AVAILABILITY_FXML);
-        paneManager.loadPane(PROCESS_REFUND, PROCESS_REFUND_FXML);
-        paneManager.setPane(STORE_AVAILABILITY);
-
-        mainHBox.getChildren().add(paneManager);
-
-
-        final Image processing = new Image(Main.class.getResourceAsStream("/images/LoadingWheel.gif"));
-        img_processing.setImage(processing);
-
-
         try {
+            logger.debug("initializing...");
+            this.lbl_manager.setText(PropertyManager.INSTANCE.getProperty("store.manager"));
+            bindToTime(lbl_dateTime);
+
+            paneManager = new PaneManager();
+            paneManager.setId("rootPaneManager");
+            paneManager.loadPane(STORE_AVAILABILITY, STORE_AVAILABILITY_FXML);
+            paneManager.loadPane(PROCESS_REFUND, PROCESS_REFUND_FXML);
+            paneManager.setPane(STORE_AVAILABILITY);
+            mainHBox.getChildren().add(paneManager);
+
+            final Image processing = new Image(Main.class.getResourceAsStream("/images/LoadingWheel.gif"));
+            img_processing.setImage(processing);
+
             updateStoreInfoControls();
         } catch (Exception e) {
             logger.error("Failed to initialize SDK Tool! ", e);
@@ -85,8 +80,6 @@ public class MainController implements Initializable, ManagedPane {
     public void setParent(PaneManager paneManager) {
         this.paneManager = paneManager;
     }
-
-
 
     /**
      * Handles the manage store event
@@ -113,25 +106,34 @@ public class MainController implements Initializable, ManagedPane {
     }
 
     public void updateStoreInfoControls() {
-        if (Main.sdkLocation == null) {
+        if (Main.getLocation() == null) {
             logger.info("sdkLocation is null so clearing store information");
-
             lbl_storeId.setText(null);
             lbl_locationId.setText(null);
-            lbl_street.setText(null);
-            lbl_city.setText(null);
-            lbl_state.setText(null);
             lbl_phone.setText(null);
-
+            lbl_addressLine1.setText(null);
+            lbl_addressLine2.setText(null);
+            lbl_addressLine3.setText(null);
+            lbl_addressLine4.setText(null);
         } else {
-            lbl_storeId.setText(Main.sdkLocation.getStoreId());
-            lbl_locationId.setText(Main.sdkLocation.getId());
-            lbl_street.setText(Main.sdkLocation.getAddress().getLine1());
-            lbl_city.setText(Main.sdkLocation.getAddress().getCity());
-            lbl_state.setText(Main.sdkLocation.getAddress().getState());
-            lbl_phone.setText(Main.sdkLocation.getPhoneNumber());
+            lbl_storeId.setText(Main.getLocation().getStoreId());
+            lbl_locationId.setText(Main.getLocation().getId());
+            lbl_phone.setText(Main.getLocation().getPhoneNumber());
+            if(Main.getLocation().getAddress() != null){
+                lbl_addressLine1.setText(Main.getLocation().getAddress().getLine1());
+                String cityState = Main.getLocation().getAddress().getCity() + ", " +
+                        Main.getLocation().getAddress().getState();
+                if(StringUtils.isNotBlank(Main.getLocation().getAddress().getLine2())) {
+                    lbl_addressLine2.setText(Main.getLocation().getAddress().getLine2());
+                    lbl_addressLine3.setText(cityState);
+                    lbl_addressLine4.setText(Main.getLocation().getAddress().getPostalCode());
+                } else {
+                    lbl_addressLine2.setText(cityState);
+                    lbl_addressLine3.setText(Main.getLocation().getAddress().getPostalCode());
+                    lbl_addressLine4.setText(null);
+                }
+            }
         }
-        return;
     }
 
     private static void bindToTime(Labeled label) {

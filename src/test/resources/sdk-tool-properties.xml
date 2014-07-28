@@ -26,7 +26,4 @@
 
     <entry key="application.mode"></entry>
     <entry key="update.location.retry.interval.seconds">30</entry>
-
-    <!-- SDK Properties -->
-    <entry key="method.timeout.seconds">30</entry>
 </properties>

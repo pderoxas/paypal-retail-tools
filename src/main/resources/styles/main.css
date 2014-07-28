@@ -28,7 +28,7 @@ root {
     -fx-font-size: 26px;
 }
 .font-xxlarge {
-    -fx-font-size: 80px;
+    -fx-font-size: 48px;
 }
 
 .text-field-large {
@@ -57,6 +57,18 @@ root {
      -fx-padding: 15 30 15 30;
      -fx-font-size: 18px;
  }
+  .button-red {
+       -fx-background-color:
+           #FDCDCD,
+           linear-gradient(#433131 0%, #783E3E 20%, #733636 100%),
+           linear-gradient(#A64B4B 0%, #BB8585 5%, #A45858 50%, #9A4848 51%, #9C4B4B 100%);
+   }
+ .button-green {
+      -fx-background-color:
+          #CDFCD0,
+          linear-gradient(#394331 0%, #49783E 20%, #4A7336 100%),
+          linear-gradient(#69A64B 0%, #9CBB85 5%, #6BA458 50%, #659A48 51%, #649C4B 100%);
+  }
 .button-blue {
      -fx-background-color:
          #a6b5c9,

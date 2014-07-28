@@ -28,7 +28,7 @@ import java.util.Properties;
 public enum PropertyManager {
     INSTANCE;
     private static Logger logger = LoggerFactory.getLogger(PropertyManager.class);
-    private static Properties properties = null;
+    private Properties properties = null;
     public static final String DEFAULT_PROP_FILE_PATH = "sdk-tool-properties.xml";  //by default, look on classpath for the file
 
     /**
@@ -118,12 +118,15 @@ public enum PropertyManager {
         if(properties == null) {
             try {
                 loadProperties();
+                properties.setProperty(propertyName, propertyValue);
             }
             catch (ConfigException e) {
                 logger.error(e.getMessage());
             }
+        } else {
+            properties.setProperty(propertyName, propertyValue);
         }
-        properties.setProperty(propertyName, propertyValue);
+
     }
 
     /**

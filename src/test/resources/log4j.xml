@@ -23,6 +23,10 @@
 
 
     <!-- ######################### START - Log4j Loggers ######################### -->
+    <logger name="com.paypal.pos.util" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="consoleAppender"/>
+    </logger>
     <!-- This is the default log4j logger -->
     <root>
         <priority value="DEBUG"/>
