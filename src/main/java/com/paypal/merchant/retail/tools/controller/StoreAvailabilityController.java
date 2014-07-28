@@ -3,7 +3,9 @@ package com.paypal.merchant.retail.tools.controller;
 import com.paypal.merchant.retail.tools.Main;
 import com.paypal.merchant.retail.tools.client.SdkClient;
 import com.paypal.merchant.retail.tools.exception.ClientException;
+import com.paypal.merchant.retail.tools.util.OneTimeTaskScheduler;
 import com.paypal.merchant.retail.tools.util.PropertyManager;
+import com.paypal.merchant.retail.tools.util.RepeatingTaskScheduler;
 import com.paypal.merchant.retail.tools.util.TaskScheduler;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -35,7 +37,7 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
     private TaskScheduler locationAvailabilityUpdater;
 
     private SimpleDateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private long retryInterval = PropertyManager.INSTANCE.getProperty("update.location.retry.interval.seconds", 60);
+    private long retryInterval = PropertyManager.INSTANCE.getProperty("sdk.method.retry.interval.seconds", 60);
     private LocationStatus currentLocationAvailability = LocationStatus.UNKNOWN;
 
     @FXML
@@ -65,7 +67,13 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
             }
 
             // Initialize the task scheduler
-            locationAvailabilityUpdater = new TaskScheduler(updateLocationAvailability, 0, retryInterval, 1);
+            boolean isRetryEnabled = PropertyManager.INSTANCE.getProperty("sdk.method.retry.enabled.flag", false);
+            if(isRetryEnabled) {
+                locationAvailabilityUpdater = new RepeatingTaskScheduler(updateLocationAvailability, 0, retryInterval, 1);
+            } else {
+                locationAvailabilityUpdater = new OneTimeTaskScheduler(updateLocationAvailability, 0, 1);
+            }
+
             bindCountdownTimer(lbl_countdown);
             updatePane();
 

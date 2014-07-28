@@ -15,7 +15,6 @@
 
     <entry key="application.title">PayPal Merchant SDK Tool</entry>
     <entry key="application.version">${project.version}</entry>
-
     <entry key="store.manager">Joseph Smith</entry>
 
 
@@ -24,9 +23,15 @@
     <entry key="sdk.store.id">SanJose</entry>
     <!--<entry key="sdk.store.id">1S1373571438-1</entry>-->
 
-    <entry key="application.mode"></entry>
-    <entry key="update.location.retry.interval.seconds">30</entry>
 
-    <!-- SDK Properties -->
-    <entry key="method.timeout.seconds">30</entry>
+
+    <!-- number of seconds before SDK command times out -->
+    <entry key="sdk.method.timeout.seconds">30</entry>
+
+    <!-- whether retry should be enabled (true/false) -->
+    <entry key="sdk.method.retry.enabled.flag">true</entry>
+
+    <!-- number of seconds between retries -->
+    <entry key="sdk.method.retry.interval.seconds">30</entry>
+
 </properties>

@@ -8,16 +8,14 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 
-public class TaskSchedulerTest  {
-    private TaskScheduler scheduler;
+public class RepeatingTaskSchedulerTest {
+    private RepeatingTaskScheduler scheduler;
     private int counter = 0;
 
     @Before
     public void setUp() throws Exception {
-        final Runnable runnable = () -> {
-            counter++;
-        };
-        scheduler = new TaskScheduler(runnable, 0, 1, 1);
+        final Runnable runnable = () -> counter++;
+        scheduler = new RepeatingTaskScheduler(runnable, 0, 1, 1);
     }
 
     @After

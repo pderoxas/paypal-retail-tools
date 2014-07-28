@@ -98,7 +98,6 @@ public enum SdkClient {
      */
     public Location setLocationAvailability(Location sdkLocation, boolean isOpen) throws ClientException {
         try {
-
             logger.info("Calling out to the PayPal Merchant SDK: SetLocationAvailabilityRequest");
             logger.info("Setting isOpen to: " + isOpen);
 
@@ -124,8 +123,8 @@ public enum SdkClient {
      */
     private void executeCommand(Command command) throws ClientException {
         try {
-            CommandResult result = timeLimiter.callWithTimeout(() -> command.execute(),
-                    PropertyManager.INSTANCE.getProperty("method.timeout.seconds", 30),
+            CommandResult result = timeLimiter.callWithTimeout(command::execute,
+                    PropertyManager.INSTANCE.getProperty("sdk.method.timeout.seconds", 30),
                     TimeUnit.SECONDS, false);
 
             // If it gets this far, the command did not timeout
@@ -150,9 +149,6 @@ public enum SdkClient {
             throw new ClientException(e.getMessage());
         }
     }
-
-
-
 
     /**
      * Private Builder Class - This will build the SDK Request Objects
