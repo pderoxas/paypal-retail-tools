@@ -10,7 +10,7 @@
 <Pane fx:id="processRefundPane" focusTraversable="true" prefHeight="665.0" prefWidth="600.0" style="-fx-background-color: #FFFFFF;" styleClass="bordered-titled-border" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.paypal.merchant.retail.tools.controller.ProcessRefundController">
   <children>
     <TextArea fx:id="txt_log" layoutX="22.0" layoutY="312.0" prefHeight="337.0" prefWidth="556.0" style="-fx-border-color: #000000;&#10;-fx-border-width: 2;" wrapText="true" />
-    <Label layoutX="138.0" layoutY="160.0" styleClass="font-medium" text="Reserved for Process Refund" />
+    <Label fx:id="lbl_message" layoutX="138.0" layoutY="160.0" styleClass="font-medium" text="Reserved for Process Refund" />
   </children>
   <rotationAxis>
     <Point3D />

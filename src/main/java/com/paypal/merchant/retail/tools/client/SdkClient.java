@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Paolo on 7/23/2014.
+ *
  */
 public enum SdkClient {
     INSTANCE;
@@ -91,8 +92,8 @@ public enum SdkClient {
     /**
      * Sets the Location to the desired state (Open or Closed)
      *
-     * @param sdkLocation
-     * @param isOpen
+     * @param sdkLocation - The Location to update
+     * @param isOpen - The desired state (true=Open, false=Closed)
      * @throws ClientException
      */
     public Location setLocationAvailability(Location sdkLocation, boolean isOpen) throws ClientException {

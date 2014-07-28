@@ -178,7 +178,6 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
      * This set the location availability via the SDK
      */
     public final Runnable updateLocationAvailability = () -> {
-        // This will only poll if PayCode Entry type is BLE
         try {
             boolean desiredState = currentLocationAvailability.equals(LocationStatus.OPEN) || currentLocationAvailability.equals(LocationStatus.OPEN_PENDING);
 

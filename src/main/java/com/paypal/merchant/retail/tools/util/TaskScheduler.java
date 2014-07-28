@@ -27,10 +27,20 @@ public class TaskScheduler {
         this.initialWait = initialWait;
     }
 
+    // Default time unit is seconds
     public void start() {
         try{
             logger.debug("Setting the schedule of tasks.");
-            scheduledFuture = service.scheduleAtFixedRate(this.runnable, initialWait, interval, TimeUnit.SECONDS);
+            this.start(TimeUnit.SECONDS);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    public void start(TimeUnit timeUnit) {
+        try{
+            logger.debug("Setting the schedule of tasks.");
+            scheduledFuture = service.scheduleAtFixedRate(this.runnable, initialWait, interval, timeUnit);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
@@ -46,6 +56,13 @@ public class TaskScheduler {
     public long getDelayTime() {
         if(scheduledFuture != null) {
             return scheduledFuture.getDelay(TimeUnit.SECONDS);
+        }
+        return 0;
+    }
+
+    public long getDelayTime(TimeUnit timeUnit) {
+        if(scheduledFuture != null) {
+            return scheduledFuture.getDelay(timeUnit);
         }
         return 0;
     }

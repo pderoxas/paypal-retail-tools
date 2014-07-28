@@ -10,6 +10,7 @@ import com.paypal.merchant.retail.tools.util.PropertyManager;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -18,10 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class MainControllerTest {
+public class StoreAvailabilityControllerTest {
 
     @org.junit.Rule
     public JavaFXThreadingRule rule = new JavaFXThreadingRule();
@@ -32,7 +32,7 @@ public class MainControllerTest {
     static Location sdkLocation;
 
     private static final String PANE = "UUT";
-    private static final String PANE_FXML = "/fxml/main.fxml";
+    private static final String PANE_FXML = "/fxml/storeAvailability.fxml";
 
     @Before
     public void setUp() throws Exception {
@@ -75,8 +75,9 @@ public class MainControllerTest {
     }
 
     @Test
-    public void testMainFxmlWithAddressLine2() {
+    public void testFxmlWithOpenLocation() {
 
+        sdkLocation.setOpen(true);
         Main.setLocation(sdkLocation);
 
         paneManager.loadPane(PANE, PANE_FXML);
@@ -85,34 +86,23 @@ public class MainControllerTest {
 
         assertTrue(unitUnderTest.isVisible());
 
-        Label storeId = (Label) unitUnderTest.lookup("#lbl_storeId");
-        assertEquals("TestStoreId", storeId.getText());
+        Label lbl_currentLocationStatus = (Label) unitUnderTest.lookup("#lbl_currentLocationStatus");
+        assertEquals("Open", lbl_currentLocationStatus.getText());
 
-        Label locationId = (Label) unitUnderTest.lookup("#lbl_locationId");
-        assertEquals("TestLocationId", locationId.getText());
+        Button btn_closeLocation = (Button) unitUnderTest.lookup("#btn_closeLocation");
+        assertEquals(true, btn_closeLocation.isVisible());
 
-        Label addressLine1 = (Label) unitUnderTest.lookup("#lbl_addressLine1");
-        assertEquals("123 Main St", addressLine1.getText());
+        Button btn_openLocation = (Button) unitUnderTest.lookup("#btn_openLocation");
+        assertEquals(false, btn_openLocation.isVisible());
 
-        Label addressLine2 = (Label) unitUnderTest.lookup("#lbl_addressLine2");
-        assertEquals("Suite 200", addressLine2.getText());
-
-        Label addressLine3 = (Label) unitUnderTest.lookup("#lbl_addressLine3");
-        assertEquals("Providence, RI", addressLine3.getText());
-
-        Label addressLine4 = (Label) unitUnderTest.lookup("#lbl_addressLine4");
-        assertEquals("02903", addressLine4.getText());
-
-        Label phone = (Label) unitUnderTest.lookup("#lbl_phone");
-        assertEquals("800-555-1234", phone.getText());
-
-        Label manager = (Label) unitUnderTest.lookup("#lbl_manager");
-        assertEquals("Joseph Smith", manager.getText());
+        Button btn_cancel = (Button) unitUnderTest.lookup("#btn_cancel");
+        assertEquals(true, btn_cancel.isDisabled());
     }
 
     @Test
-    public void testMainFxmlWithoutAddressLine2() {
-        sdkLocation.getAddress().setLine2(null);
+    public void testFxmlWithClosedLocation() {
+
+        sdkLocation.setOpen(false);
         Main.setLocation(sdkLocation);
 
         paneManager.loadPane(PANE, PANE_FXML);
@@ -121,28 +111,40 @@ public class MainControllerTest {
 
         assertTrue(unitUnderTest.isVisible());
 
-        Label storeId = (Label) unitUnderTest.lookup("#lbl_storeId");
-        assertEquals("TestStoreId", storeId.getText());
+        Label lbl_currentLocationStatus = (Label) unitUnderTest.lookup("#lbl_currentLocationStatus");
+        assertEquals("Closed", lbl_currentLocationStatus.getText());
 
-        Label locationId = (Label) unitUnderTest.lookup("#lbl_locationId");
-        assertEquals("TestLocationId", locationId.getText());
+        Button btn_closeLocation = (Button) unitUnderTest.lookup("#btn_closeLocation");
+        assertEquals(false, btn_closeLocation.isVisible());
 
-        Label addressLine1 = (Label) unitUnderTest.lookup("#lbl_addressLine1");
-        assertEquals("123 Main St", addressLine1.getText());
+        Button btn_openLocation = (Button) unitUnderTest.lookup("#btn_openLocation");
+        assertEquals(true, btn_openLocation.isVisible());
 
-        Label addressLine2 = (Label) unitUnderTest.lookup("#lbl_addressLine2");
-        assertEquals("Providence, RI", addressLine2.getText());
-
-        Label addressLine3 = (Label) unitUnderTest.lookup("#lbl_addressLine3");
-        assertEquals("02903", addressLine3.getText());
-
-        Label addressLine4 = (Label) unitUnderTest.lookup("#lbl_addressLine4");
-        assertNull(addressLine4.getText());
-
-        Label phone = (Label) unitUnderTest.lookup("#lbl_phone");
-        assertEquals("800-555-1234", phone.getText());
-
-        Label manager = (Label) unitUnderTest.lookup("#lbl_manager");
-        assertEquals("Joseph Smith", manager.getText());
+        Button btn_cancel = (Button) unitUnderTest.lookup("#btn_cancel");
+        assertEquals(true, btn_cancel.isDisabled());
     }
+
+    @Test
+    public void testFxmlWithNullLocation() {
+        Main.setLocation(null);
+
+        paneManager.loadPane(PANE, PANE_FXML);
+        paneManager.setPane(PANE);
+        unitUnderTest = (Pane) paneManager.getPane(PANE);
+
+        assertTrue(unitUnderTest.isVisible());
+
+        Label lbl_currentLocationStatus = (Label) unitUnderTest.lookup("#lbl_currentLocationStatus");
+        assertEquals("Unknown", lbl_currentLocationStatus.getText());
+
+        Button btn_closeLocation = (Button) unitUnderTest.lookup("#btn_closeLocation");
+        assertEquals(false, btn_closeLocation.isVisible());
+
+        Button btn_openLocation = (Button) unitUnderTest.lookup("#btn_openLocation");
+        assertEquals(true, btn_openLocation.isVisible());
+
+        Button btn_cancel = (Button) unitUnderTest.lookup("#btn_cancel");
+        assertEquals(true, btn_cancel.isDisabled());
+    }
+
 }
