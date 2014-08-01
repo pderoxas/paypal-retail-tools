@@ -9,43 +9,58 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertTrue;
 
 public class RepeatingTaskSchedulerTest {
-    private RepeatingTaskScheduler scheduler;
+    private TaskScheduler scheduler;
     private int counter = 0;
 
     @Before
     public void setUp() throws Exception {
+        counter = 0;
         final Runnable runnable = () -> counter++;
-        scheduler = new RepeatingTaskScheduler(runnable, 0, 1, 1);
+        scheduler = new RepeatingTaskScheduler(runnable, 0, 1, 1, TimeUnit.MILLISECONDS);
     }
 
     @After
     public void tearDown() throws Exception {
-
+        scheduler.stop();
     }
 
     @Test
     public void testStart() throws Exception {
         scheduler.start();
 
-        // Need to give it time to execute since it is on another thread
-        Thread.sleep(1);
-        assertTrue(counter <= 1);
+        Thread.sleep(10);
+        int value1 = counter;
+        System.out.println("testStart value1: " + value1);
+
+        Thread.sleep(10);
+        int value2 = counter;
+        System.out.println("testStart value2: " + value2);
+
+        Thread.sleep(10);
+        int value3 = counter;
+        System.out.println("testStart value3: " + value3);
+
+        assertTrue(value1 < value2);
+        assertTrue(value2 < value3);
     }
 
     @Test
     public void testStop() throws Exception {
-        scheduler.start(TimeUnit.MILLISECONDS);
+        scheduler.start();
         scheduler.stop();
+        int value = counter;
 
-        // Sleep for 10 and ensure that counter was not incremented more than twice
-        // We have to allow for some variance when dealing with milliseconds
+        // Sleep for 10 and ensure that counter was not incremented
         Thread.sleep(10);
-        assertTrue(counter <= 1);
+        System.out.println("testStart value: " + value);
+        System.out.println("testStart counter: " + counter);
+        assertTrue(value == counter);
     }
 
     @Test
     public void testGetDelayTime() throws Exception {
-        scheduler.start(TimeUnit.SECONDS);
-        assertTrue(scheduler.getDelayTime() == 0 || scheduler.getDelayTime() == 1);
+        scheduler.start();
+        System.out.println("testGetDelayTime counter: " + counter);
+        assertTrue(scheduler.getDelayTime() <= 1);
     }
 }

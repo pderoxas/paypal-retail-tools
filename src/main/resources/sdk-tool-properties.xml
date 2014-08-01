@@ -9,29 +9,29 @@
                 ]>
 <properties>
     <comment>
-        This file must exist in the classpath OR be defined as -Dproperties.xml=/path/to/properties.xml
-        via command line.
+        This file must exist in the classpath OR be defined as -Dproperties.xml=/path/to/[name-of-properties-file.xml]
+        via command line
     </comment>
 
-    <entry key="application.title">PayPal Merchant SDK Tool</entry>
+    <entry key="application.title">PayPal Retail SDK Tool</entry>
     <entry key="application.version">${project.version}</entry>
     <entry key="store.manager">Joseph Smith</entry>
 
-
     <!-- SDK Location Info -->
-    <!-- These must match entries found in the Config.xml -->
+    <!-- This value must match a <Store id="XXXX"> entry in the Config.xml -->
     <entry key="sdk.store.id">SanJose</entry>
     <!--<entry key="sdk.store.id">1S1373571438-1</entry>-->
 
-
-
     <!-- number of seconds before SDK command times out -->
-    <entry key="sdk.method.timeout.seconds">30</entry>
+    <entry key="sdk.service.timeout.seconds">10</entry>
 
     <!-- whether retry should be enabled (true/false) -->
-    <entry key="sdk.method.retry.enabled.flag">true</entry>
+    <entry key="sdk.service.retry.enabled.flag">false</entry>
 
     <!-- number of seconds between retries -->
-    <entry key="sdk.method.retry.interval.seconds">30</entry>
+    <entry key="sdk.service.retry.interval.seconds">15</entry>
+
+    <!-- maximum number of retries before quitting -->
+    <entry key="sdk.service.retry.max.attempts">3</entry>
 
 </properties>

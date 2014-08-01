@@ -22,6 +22,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="paypal-sdk-utilities" />
         <module name="retail-tools" />
         <module name="sdk-tool" />
       </profile>

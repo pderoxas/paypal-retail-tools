@@ -100,7 +100,6 @@
                         <version>2.0</version>
                     </dependency>
                 </dependencies>
-
             </plugin>
 
             <plugin>
@@ -127,27 +126,6 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <!-- copy the launch.cmd file to the target dir-->
-                        <id>copy-launch-file</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/src/main/</directory>
-                                    <filtering>false</filtering>
-                                    <includes>
-                                        <include>launch.cmd</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-
                 </executions>
             </plugin>
 

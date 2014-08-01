@@ -10,11 +10,11 @@
 <Pane fx:id="storeAvailabilityPane" focusTraversable="true" prefHeight="665.0" prefWidth="600.0" style="-fx-background-color: #FFFFFF;" styleClass="bordered-titled-border" visible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.paypal.merchant.retail.tools.controller.StoreAvailabilityController">
   <children>
     <Label alignment="TOP_CENTER" layoutX="22.0" layoutY="41.0" prefWidth="556.0" styleClass="font-large" text="Store Location is currently:" textAlignment="CENTER" />
-    <Label fx:id="lbl_currentLocationStatus" alignment="TOP_CENTER" layoutX="19.0" layoutY="99.0" prefWidth="562.0" styleClass="font-xxlarge" text="STATUS" textAlignment="CENTER" />
+    <Label fx:id="lbl_currentLocationStatus" alignment="TOP_CENTER" layoutX="19.0" layoutY="90.0" prefWidth="562.0" styleClass="font-xxlarge" text="STATUS" textAlignment="CENTER" />
     <Button fx:id="btn_openLocation" layoutX="42.0" layoutY="213.0" mnemonicParsing="false" onAction="#handleOpenLocation" prefHeight="75.0" prefWidth="244.0" styleClass="button-large, button-green" text="OPEN" />
     <TextArea fx:id="txt_log" layoutX="22.0" layoutY="312.0" prefHeight="337.0" prefWidth="556.0" style="-fx-border-color: #000000;&#10;-fx-border-width: 2;" wrapText="true" />
     <Button fx:id="btn_cancel" disable="true" layoutX="314.0" layoutY="213.0" mnemonicParsing="false" onAction="#handleCancel" prefHeight="75.0" prefWidth="244.0" styleClass="button-large, button-grey" text="CANCEL" />
-    <Label fx:id="lbl_countdown" alignment="CENTER" layoutX="25.0" layoutY="173.0" prefWidth="550.0" styleClass="font-medium" text="" textAlignment="CENTER" />
+    <Label fx:id="lbl_countdown" alignment="CENTER" contentDisplay="CENTER" layoutX="25.0" layoutY="160.0" prefHeight="39.2626953125" prefWidth="550.0" styleClass="font-small" text="" textAlignment="CENTER" />
     <Button fx:id="btn_closeLocation" layoutX="42.0" layoutY="213.0" mnemonicParsing="false" onAction="#handleCloseLocation" prefHeight="75.0" prefWidth="244.0" styleClass="button-large, button-red" text="CLOSE" />
   </children>
   <rotationAxis>

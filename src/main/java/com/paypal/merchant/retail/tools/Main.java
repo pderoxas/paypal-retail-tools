@@ -44,8 +44,8 @@ public final class Main extends Application {
     private Pane splashLayout;
     private ProgressBar loadProgress;
     private Label progressText;
-    private static final int SPLASH_WIDTH = 687;
-    private static final int SPLASH_HEIGHT = 181;
+    private static final int SPLASH_WIDTH = 642;
+    private static final int SPLASH_HEIGHT = 169;
 
     public static void main(String[] args) {
         logger.info("Launching Merchant SDK Tool");

@@ -26,19 +26,23 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Paolo on 7/21/2014.
  *
  */
 public class StoreAvailabilityController implements Initializable, ManagedPane {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final long RETRY_INTERVAL = PropertyManager.INSTANCE.getProperty("sdk.service.retry.interval.seconds", 60);
+    private final boolean IS_RETRY_ENABLED = PropertyManager.INSTANCE.getProperty("sdk.service.retry.enabled.flag", false);
+    private final int RETRY_MAX_ATTEMPTS = PropertyManager.INSTANCE.getProperty("sdk.service.retry.max.attempts", 5);
+
     private PaneManager paneManager;
     private TaskScheduler locationAvailabilityUpdater;
-
     private SimpleDateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private long retryInterval = PropertyManager.INSTANCE.getProperty("sdk.method.retry.interval.seconds", 60);
-    private LocationStatus currentLocationAvailability = LocationStatus.UNKNOWN;
+    private LocationAvailability currentLocationAvailability = LocationAvailability.UNKNOWN;
+    private int openCloseAttemptCount = 0;
 
     @FXML
     private Label lbl_currentLocationStatus, lbl_countdown;
@@ -49,35 +53,38 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
     @FXML
     private TextArea txt_log;
 
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         logger.debug("initializing storeAvailabilityPane...");
+        txt_log.setEditable(false);
 
         try {
             if (Main.getLocation() == null) {
-                currentLocationAvailability = LocationStatus.UNKNOWN;
+                currentLocationAvailability = LocationAvailability.UNKNOWN;
                 appendToLog("FAILED to initialize. Unable to get store location information!" );
             } else {
                 if (Main.getLocation().isOpen()) {
-                    currentLocationAvailability = LocationStatus.OPEN;
+                    currentLocationAvailability = LocationAvailability.OPEN;
                 } else {
-                    currentLocationAvailability = LocationStatus.CLOSED;
+                    currentLocationAvailability = LocationAvailability.CLOSED;
                 }
             }
 
             // Initialize the task scheduler
-            boolean isRetryEnabled = PropertyManager.INSTANCE.getProperty("sdk.method.retry.enabled.flag", false);
-            if(isRetryEnabled) {
-                locationAvailabilityUpdater = new RepeatingTaskScheduler(updateLocationAvailability, 0, retryInterval, 1);
+
+            if(IS_RETRY_ENABLED) {
+                bindCountdownTimer(lbl_countdown);
+                locationAvailabilityUpdater = new RepeatingTaskScheduler(updateLocationAvailability, 0, RETRY_INTERVAL, 1, TimeUnit.SECONDS);
             } else {
-                locationAvailabilityUpdater = new OneTimeTaskScheduler(updateLocationAvailability, 0, 1);
+                locationAvailabilityUpdater = new OneTimeTaskScheduler(updateLocationAvailability, 0, 1, TimeUnit.SECONDS);
             }
 
-            bindCountdownTimer(lbl_countdown);
-            updatePane();
 
-            appendToLog("Initial store location availability: " + currentLocationAvailability.toString());
+            updatePane();
+            btn_openLocation.setDisable(false);
+            btn_closeLocation.setDisable(false);
+
+            appendToLog("Initial store location availability: " + currentLocationAvailability.name());
         } catch (Exception e) {
             logger.error("Failed to initialize SDK Tool! ", e);
         }
@@ -95,14 +102,7 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
      */
     @FXML
     protected void handleOpenLocation(ActionEvent event) {
-        logger.debug("Handling OPEN Location button");
-        try {
-            currentLocationAvailability = LocationStatus.OPEN_PENDING;
-            locationAvailabilityUpdater.start();
-        } catch (Exception e) {
-            logger.error("Failed to handle Change Location Status ", e);
-            appendToLog("Failed to change Store Location Availability");
-        }
+        openCloseLocation(LocationAvailability.OPEN_PENDING);
         event.consume();
     }
 
@@ -113,15 +113,21 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
      */
     @FXML
     protected void handleCloseLocation(ActionEvent event) {
-        logger.debug("Handling CLOSE Location button");
+        openCloseLocation(LocationAvailability.CLOSE_PENDING);
+        event.consume();
+    }
+
+    private void openCloseLocation(LocationAvailability desiredAvailability) {
+        btn_openLocation.setDisable(true);
+        btn_closeLocation.setDisable(true);
+        logger.debug("Setting location availability to: " + desiredAvailability.name());
         try {
-            currentLocationAvailability = LocationStatus.CLOSE_PENDING;
+            currentLocationAvailability = desiredAvailability;
             locationAvailabilityUpdater.start();
         } catch (Exception e) {
-            logger.error("Failed to handle Change Location Status ", e);
-            appendToLog("Failed to change Store Location Availability");
+            logger.error("Setting location availability to: " + desiredAvailability.name(), e);
+            appendToLog("Failed to set Store Location Availability to:" + desiredAvailability.toString());
         }
-        event.consume();
     }
 
     /**
@@ -132,29 +138,34 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
     @FXML
     protected void handleCancel(ActionEvent event) {
         logger.debug("Handling Cancel button");
-        btn_cancel.setDisable(true);
-
-        // If successful, it will stop the scheduler.  Otherwise, the scheduler will continue
+        // stop the current action
         locationAvailabilityUpdater.stop();
+
+        btn_cancel.setDisable(true);
+        btn_openLocation.setDisable(false);
+        btn_closeLocation.setDisable(false);
+
 
         // Show the right action button based on current location availability
         switch (currentLocationAvailability) {
             case OPEN:
             case OPEN_PENDING:
-                currentLocationAvailability = LocationStatus.CLOSED;
+                currentLocationAvailability = LocationAvailability.CLOSED;
                 btn_closeLocation.setVisible(false);
                 btn_openLocation.setVisible(true);
                 break;
             case CLOSED:
             case CLOSE_PENDING:
-                currentLocationAvailability = LocationStatus.OPEN;
+                currentLocationAvailability = LocationAvailability.OPEN;
                 btn_closeLocation.setVisible(true);
                 btn_openLocation.setVisible(false);
                 break;
             default:
-                currentLocationAvailability = LocationStatus.UNKNOWN;
+                currentLocationAvailability = LocationAvailability.UNKNOWN;
                 break;
         }
+
+        appendToLog("Previous action canceled by user. Store Location is: " + currentLocationAvailability.toString());
 
         updatePane();
         event.consume();
@@ -186,15 +197,19 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
      * This set the location availability via the SDK
      */
     public final Runnable updateLocationAvailability = () -> {
+        boolean isSuccessful = false;
         try {
-            boolean desiredState = currentLocationAvailability.equals(LocationStatus.OPEN) || currentLocationAvailability.equals(LocationStatus.OPEN_PENDING);
+            // if either open or open pending, set desiredState to true
+            boolean desiredIsOpen = currentLocationAvailability.equals(LocationAvailability.OPEN_PENDING) ||
+                    currentLocationAvailability.equals(LocationAvailability.OPEN);
 
             Platform.runLater(() -> {
+                Main.getController().showProcessing();
                 updatePane();
                 lbl_countdown.setText("");
-                appendToLog("Attempting to set Store Location Availability to: " + (desiredState ? "OPEN" : "CLOSED"));
+                appendToLog((openCloseAttemptCount > 0 ? "Retry #" + openCloseAttemptCount + ": " : "") +
+                        "Attempting to set Store Location Availability to: " + (desiredIsOpen ? "OPEN" : "CLOSED"));
                 // hide the glass pane
-                Main.getController().showProcessing();
             });
 
             if(Main.getLocation() == null) {
@@ -202,20 +217,61 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
                 Main.setLocation(SdkClient.INSTANCE.getSdkLocation());
             }
 
-            logger.debug("Call out to SDK to set the location availability to: " + desiredState);
-            Main.setLocation(SdkClient.INSTANCE.setLocationAvailability(Main.getLocation(), desiredState));
+            logger.debug("Call out to SDK to set the location isOpen to: " + desiredIsOpen);
+            Main.setLocation(SdkClient.INSTANCE.setLocationAvailability(Main.getLocation(), desiredIsOpen));
 
             if(Main.getLocation().isOpen()) {
-                currentLocationAvailability = LocationStatus.OPEN;
+                currentLocationAvailability = LocationAvailability.OPEN;
             } else {
-                currentLocationAvailability = LocationStatus.CLOSED;
+                currentLocationAvailability = LocationAvailability.CLOSED;
             }
 
             // If successful, it will stop the scheduler.  Otherwise, the scheduler will continue
             locationAvailabilityUpdater.stop();
+            openCloseAttemptCount = 0;
+
+            Platform.runLater(() -> {
+                btn_openLocation.setDisable(false);
+                btn_closeLocation.setDisable(false);
+            });
         } catch (ClientException e) {
             logger.error("Failed to set Store Location Availability");
-            Platform.runLater(() -> appendToLog(e.getMessage()));
+
+            if(IS_RETRY_ENABLED) {
+                if(openCloseAttemptCount >= RETRY_MAX_ATTEMPTS){
+                    openCloseAttemptCount = 0;
+                    logger.debug("Maximum number of retry attempts. Stopping the scheduler.");
+                    Platform.runLater(() -> {
+                        appendToLog(e.getMessage());
+                        appendToLog("Maximum number of retry attempts have been reached.");
+                        handleCancel(null);
+                    });
+                } else {
+                    openCloseAttemptCount++;
+                    Platform.runLater(() -> {
+                        appendToLog(e.getMessage());
+                        appendToLog("Automatic retry in " + getCountdownString(RETRY_INTERVAL));
+                    });
+                }
+            } else {
+                locationAvailabilityUpdater.stop();
+                Platform.runLater(() -> {
+                    appendToLog(e.getMessage());
+                    appendToLog("Manual retry is required.");
+                    //re-enable the buttons
+                    btn_openLocation.setDisable(false);
+                    btn_closeLocation.setDisable(false);
+
+                    // Set the current location availability to the last known value
+                    if(currentLocationAvailability.equals(LocationAvailability.OPEN_PENDING)){
+                        currentLocationAvailability = LocationAvailability.CLOSED;
+                        lbl_countdown.setText("Last attempt to Open the store location failed. Manual retry is required.");
+                    } else if(currentLocationAvailability.equals(LocationAvailability.CLOSE_PENDING)){
+                        currentLocationAvailability = LocationAvailability.OPEN;
+                        lbl_countdown.setText("Last attempt to Close the store location failed. Manual retry is required.");
+                    }
+                });
+            }
         } finally {
             Platform.runLater(() -> {
                 updatePane();
@@ -236,18 +292,13 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
                 new KeyFrame(Duration.millis(500),
                         actionEvent -> {
                             if(locationAvailabilityUpdater.getDelayTime() > 0 &&
-                                    (currentLocationAvailability.equals(LocationStatus.OPEN_PENDING) ||
-                                            currentLocationAvailability.equals(LocationStatus.CLOSE_PENDING) )) {
-
+                                (currentLocationAvailability.equals(LocationAvailability.OPEN_PENDING) ||
+                                currentLocationAvailability.equals(LocationAvailability.CLOSE_PENDING)) ) {
                                 label.setText("Automatic retry in " + getCountdownString(locationAvailabilityUpdater.getDelayTime()));
                                 btn_cancel.setDisable(false);
-                                btn_openLocation.setDisable(true);
-                                btn_closeLocation.setDisable(true);
                             } else {
                                 label.setText("");
                                 btn_cancel.setDisable(true);
-                                btn_openLocation.setDisable(false);
-                                btn_closeLocation.setDisable(false);
                             }
                         }
                 ),
@@ -277,7 +328,7 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
         txt_log.appendText(logDateFormat.format(new Date()) + " - " + message + "\n");
     }
 
-    enum LocationStatus {
+    enum LocationAvailability {
         UNKNOWN("Unknown"),
         OPEN("Open"),
         OPEN_PENDING("Open (Pending)"),
@@ -285,7 +336,7 @@ public class StoreAvailabilityController implements Initializable, ManagedPane {
         CLOSE_PENDING("Closed (Pending)");
 
         private String status;
-        private LocationStatus(String status) {
+        private LocationAvailability(String status) {
             this.status = status;
         }
 

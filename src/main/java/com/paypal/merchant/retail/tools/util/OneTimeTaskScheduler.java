@@ -1,6 +1,5 @@
 package com.paypal.merchant.retail.tools.util;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.Executors;
@@ -19,18 +18,20 @@ public class OneTimeTaskScheduler implements TaskScheduler {
     private ScheduledFuture<?> scheduledFuture;
     private Runnable runnable;
     private long initialWait;
+    private TimeUnit timeUnit;
 
-    public OneTimeTaskScheduler(final Runnable runnableTask, long initialWait, int threadPoolSize) {
+    public OneTimeTaskScheduler(final Runnable runnableTask, long initialWait, int threadPoolSize, TimeUnit timeUnit) {
         this.service = Executors.newScheduledThreadPool(threadPoolSize);
         this.runnable = runnableTask;
         this.initialWait = initialWait;
+        this.timeUnit = timeUnit;
     }
 
     @Override
     public void start() {
         try{
             logger.debug("Setting the schedule of tasks.");
-            this.start(TimeUnit.SECONDS);
+            scheduledFuture = service.schedule(this.runnable, initialWait, timeUnit);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
@@ -47,15 +48,5 @@ public class OneTimeTaskScheduler implements TaskScheduler {
     @Override
     public long getDelayTime() {
         return 0;
-    }
-
-    @VisibleForTesting
-    public void start(TimeUnit timeUnit) {
-        try{
-            logger.debug("Setting the schedule of tasks.");
-            scheduledFuture = service.schedule(this.runnable, initialWait, timeUnit);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
     }
 }

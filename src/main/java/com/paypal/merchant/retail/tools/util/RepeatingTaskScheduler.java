@@ -1,6 +1,5 @@
 package com.paypal.merchant.retail.tools.util;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.Executors;
@@ -20,19 +19,21 @@ public class RepeatingTaskScheduler implements TaskScheduler {
     private Runnable runnable;
     private long interval;
     private long initialWait;
+    private TimeUnit timeUnit;
 
-    public RepeatingTaskScheduler(final Runnable runnableTask, long initialWait, long interval, int threadPoolSize) {
+    public RepeatingTaskScheduler(final Runnable runnableTask, long initialWait, long interval, int threadPoolSize, TimeUnit timeUnit) {
         this.service = Executors.newScheduledThreadPool(threadPoolSize);
         this.runnable = runnableTask;
         this.interval = interval;
         this.initialWait = initialWait;
+        this.timeUnit = timeUnit;
     }
 
     @Override
     public void start() {
         try{
             logger.debug("Setting the schedule of tasks.");
-            this.start(TimeUnit.SECONDS);
+            scheduledFuture = service.scheduleAtFixedRate(this.runnable, initialWait, interval, timeUnit);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
@@ -54,15 +55,7 @@ public class RepeatingTaskScheduler implements TaskScheduler {
         return 0;
     }
 
-    @VisibleForTesting
-    public void start(TimeUnit timeUnit) {
-        try{
-            logger.debug("Setting the schedule of tasks.");
-            scheduledFuture = service.scheduleAtFixedRate(this.runnable, initialWait, interval, timeUnit);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
-    }
+
 
 
 }
